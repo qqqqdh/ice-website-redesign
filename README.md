@@ -30,10 +30,30 @@ HTML, CSS 또는 JavaScript를 수정하고 브라우저를 새로고침합니�
 
 ## GitHub Pages 배포
 
-예정 배포 주소: https://qqqqdh.github.io/ice-website-redesign/
+배포 주소: https://qqqqdh.github.io/ice-website-redesign/
 
 최초 한 번 저장소 Settings → Pages → Build and deployment → Source에서 **GitHub Actions**를 선택합니다. 이후 Actions → Deploy to GitHub Pages → Run workflow로 첫 배포를 실행합니다.
 
-그다음부터는 `main` 브랜치에 변경 사항을 push하면 자동으로 배포됩니다. 실행 결과와 배포 링크는 Actions 및 `github-pages` 환경에서 확인할 수 있습니다.
+그다음부터는 PR이 `main` 브랜치에 병합되면 자동으로 배포됩니다. 실행 결과와 배포 링크는 Actions 및 `github-pages` 환경에서 확인할 수 있습니다.
 
 워크플로는 `index.html`, `src/style.css`, `src/app.js`, `assets/`만 배포합니다. 링크와 파일 경로가 상대 경로이므로 저장소 하위 주소에서도 동작합니다.
+
+## GitHub Flow로 작업하기
+
+1. 최신 `main`에서 작업별 브랜치를 만듭니다. 예: `feature/notice-list`, `fix/mobile-menu`.
+2. 수정 내용을 커밋하고 작업 브랜치에 push합니다.
+3. `main`을 대상으로 PR을 열고 변경 이유와 확인 결과를 적습니다.
+4. `Site checks` 통과와 팀원 1명 이상의 승인을 받은 뒤 병합합니다. 수정 커밋을 추가하면 다시 검사하고 승인을 받습니다.
+5. Pages 배포 성공을 확인하고 병합한 작업 브랜치를 삭제합니다.
+
+`main` 보호 규칙은 GitHub 저장소 설정에서 관리합니다. 관리자에게도 PR·승인·필수 검사를 적용하며, 강제 push와 브랜치 삭제를 허용하지 않습니다.
+
+PR 자동 검사는 JavaScript 문법, HTML 태그 중첩, 중복 ID, HTML에서 참조한 로컬 파일, 내부 링크와 접근성 ID 연결을 확인합니다. 화면 배치와 실제 브라우저 조작은 PR 작성자가 별도로 확인합니다.
+
+같은 검사를 로컬에서 실행하려면 Node.js와 Python 3.10 이상이 필요합니다. 사이트를 여는 데에는 설치가 필요하지 않습니다.
+
+```sh
+node --check src/app.js
+python -B -m unittest discover -s tests
+python -B scripts/check_site.py
+```
